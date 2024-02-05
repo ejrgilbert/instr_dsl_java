@@ -1,0 +1,9 @@
+# IntelliJ
+.idea/
+.DS_Store
+target/
+*.iml
+
+# Antlr
+*.tokens
+/**/gen
