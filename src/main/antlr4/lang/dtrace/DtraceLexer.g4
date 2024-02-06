@@ -68,7 +68,6 @@ RELOP : '==' |
 
 // Logical operators
 LOGOP : '&&' |
-        '||' |
-        '^^' ;
+        '||' ;
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
