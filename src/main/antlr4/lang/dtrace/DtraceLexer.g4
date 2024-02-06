@@ -40,8 +40,6 @@ HEX_DIG : DEC_DIG_W_ZERO |
 DEC_DIG : '1' .. '9';
 DEC_DIG_W_ZERO : '0' | DEC_DIG;
 
-
-
 SLASH : '/' ;
 LPAREN : '(' ;
 RPAREN : ')' ;
@@ -69,5 +67,9 @@ RELOP : '==' |
 // Logical operators
 LOGOP : '&&' |
         '||' ;
+
+BEGIN_COMM : '/*' ;
+END_COMM : '*/' ;
+COMMENT : BEGIN_COMM .*? END_COMM -> skip ; // skip the comments
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines

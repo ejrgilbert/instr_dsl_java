@@ -50,6 +50,22 @@ public class DtraceParserTest {
             "provider:module:function:name / i54 < r77 / { }",
             "provider:module:function:name / i54 < r77 / { }",
             "provider:module:function:name / i != 7 / { }",
+
+            // Statements
+            """
+            provider:module:function:name {
+                i
+            }
+            """,
+
+            // Comments
+            "provider:module:function:name { } /* */",
+            "/* comment */\nprovider:module:function:name { } /* */",
+            """
+            provider:module:function:name {
+                i /* Comment about statement */
+            }
+            """,
     };
 
     public static final String[] invalidStrings = {
