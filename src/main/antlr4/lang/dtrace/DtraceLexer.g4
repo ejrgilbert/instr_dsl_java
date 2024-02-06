@@ -11,8 +11,7 @@ PROBE_SPEC : (ID | PROBE_ID)? ':' (ID | PROBE_ID)? |
              (ID | PROBE_ID)? ':' (ID | PROBE_ID)? ':' (ID | PROBE_ID)? ':' (ID | PROBE_ID)? ;
 
 ID : WORD ( DEC_DIG_W_ZERO | WORD )* ;
-// TODO -- this should be able to pull any String, currently too constrained
-STRING : QUOTE ID QUOTE ;
+STRING : '"' .*? '"' ;
 
 PROBE_ID : PROBE_SYM+ ;
 PROBE_SYM : LETTER |
@@ -45,7 +44,6 @@ LPAREN : '(' ;
 RPAREN : ')' ;
 LCURLY : '{' ;
 RCURLY : '}' ;
-QUOTE : '"' ;
 
 // Highest precedence arithmetic operators
 SUMOP : '+' |

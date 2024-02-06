@@ -45,11 +45,12 @@ public class DtraceParserTest {
 
             // Predicates
             "provider:module:function:name / i / { }",
-            "provider:module:function:name / i == 1 / { }",
             "provider:module:function:name / \"i\" <= 1 / { }",
             "provider:module:function:name / i54 < r77 / { }",
             "provider:module:function:name / i54 < r77 / { }",
             "provider:module:function:name / i != 7 / { }",
+            "provider:module:function:name / (i == \"1\") && (b == \"2\") / { }",
+            "provider:module:function:name / i == \"1\" && b == \"2\" / { }",
 
             // Statements
             """
@@ -97,62 +98,8 @@ public class DtraceParserTest {
     }
 
     private boolean isValidLanguageString(String languageString) throws IOException {
-        DtraceParserTest.ErrorListener errorListener = new DtraceParserTest.ErrorListener();
-        parseDscript(languageString, errorListener);
+        ParseUtils.ErrorListener errorListener = new ParseUtils.ErrorListener();
+        ParseUtils.parseDscript(languageString, errorListener);
         return !errorListener.isFail();
-    }
-
-    public static DtraceParser.DscriptContext parseDscript(String script, ANTLRErrorListener errorListener) throws IOException {
-        CharStream charStream;
-        try (ByteArrayInputStream is = new ByteArrayInputStream(script.getBytes(StandardCharsets.UTF_8))) {
-            try (InputStreamReader isr = new InputStreamReader(is, Charset.defaultCharset())) {
-                charStream = CharStreams.fromReader(isr);
-            }
-        }
-
-        DtraceLexer lexer = new DtraceLexer(charStream);
-        lexer.addErrorListener(errorListener);
-        TokenStream inputTokenStream = new CommonTokenStream(lexer);
-
-        DtraceParser parser = new DtraceParser(inputTokenStream);
-
-        parser.addErrorListener(errorListener);
-        return parser.dscript();
-    }
-
-    public static class ErrorListener extends BaseErrorListener {
-        private boolean fail = false;
-
-        public boolean isFail() {
-            return fail;
-        }
-
-        public void setFail(boolean fail) {
-            this.fail = fail;
-        }
-
-        @Override
-        public void syntaxError(Recognizer<?, ?> arg0, Object arg1, int arg2,
-                                int arg3, String arg4, RecognitionException arg5) {
-            setFail(true);
-        }
-
-        @Override
-        public void reportContextSensitivity(Parser arg0, DFA arg1, int arg2,
-                                             int arg3, int arg4, ATNConfigSet arg5) {
-            setFail(true);
-        }
-
-        @Override
-        public void reportAttemptingFullContext(Parser arg0, DFA arg1, int arg2,
-                                                int arg3, BitSet arg4, ATNConfigSet arg5) {
-            setFail(true);
-        }
-
-        @Override
-        public void reportAmbiguity(Parser arg0, DFA arg1, int arg2, int arg3,
-                                    boolean arg4, BitSet arg5, ATNConfigSet arg6) {
-            setFail(true);
-        }
     }
 }

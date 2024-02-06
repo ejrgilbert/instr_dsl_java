@@ -20,7 +20,7 @@ import lang.dtrace.ast.id.VarIdNode;
 import lang.dtrace.ast.val.IntNode;
 import lang.dtrace.ast.val.StringNode;
 
-// TODO -- what should these methods return?
+// TODO -- what should these methods return? Might not even need this file?
 public interface DtraceASTVisitor {
     // Logical expressions
     public Number visitAndExp(AndExpNode andExpNode);
