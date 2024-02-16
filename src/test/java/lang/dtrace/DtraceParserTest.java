@@ -1,26 +1,14 @@
 package lang.dtrace;
 
-import org.antlr.v4.runtime.ANTLRErrorListener;
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.atn.ATNConfigSet;
-import org.antlr.v4.runtime.dfa.DFA;
+import lang.dtrace.ast.DtraceASTNode;
+import lang.dtrace.visitor.ASTBuilderVisitor;
+import lang.dtrace.visitor.DtraceASTDumper;
+import lang.dtrace.visitor.DtraceVisitor;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.BitSet;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -51,6 +39,7 @@ public class DtraceParserTest {
             "provider:module:function:name / i != 7 / { }",
             "provider:module:function:name / (i == \"1\") && (b == \"2\") / { }",
             "provider:module:function:name / i == \"1\" && b == \"2\" / { }",
+//            "provider:module:function:name / i == (1 + 3) / { i }", // TODO -- fix
 
             // Statements
             """
@@ -78,6 +67,7 @@ public class DtraceParserTest {
             "provider:module:function:name // { }",
             "provider:module:function:name / 5i < r77 / { }",
 //            "provider:module:function:name / i < 1 < 2 / { }", // TODO -- make invalid on semantic pass
+//            "provider:module:function:name / (1 + 3) / { i }", // TODO -- make invalid on type check
 
             // bad statement
             "provider:module:function:name / i == 1 / { 2i }",
@@ -95,6 +85,22 @@ public class DtraceParserTest {
         for (String invalid : invalidStrings) {
             assertFalse("string '" + invalid + "' is recognized as valid, but it should not", isValidLanguageString(invalid));
         }
+    }
+
+    @Test
+    public void testASTDumper() throws IOException {
+        String dscript = "provider:module:function:name / (i == \"1\") && (b == \"2\") / { i }";
+        ParseUtils.ErrorListener errorListener = new ParseUtils.ErrorListener();
+        DtraceParser.DscriptContext concreteParseTree = ParseUtils.parseDscript(dscript, errorListener);
+        assertFalse(errorListener.isFail());
+
+        // Create AST
+        ASTBuilderVisitor astBuilder = new ASTBuilderVisitor();
+        DtraceASTNode ast = concreteParseTree.accept(astBuilder); // knows type because of `ASTBuilderVisitor extends DtraceParserBaseVisitor<DtraceASTNode>`
+
+        DtraceVisitor<String> dumper = new DtraceASTDumper();
+        String result = ast.accept(dumper);
+        logger.info(result);
     }
 
     private boolean isValidLanguageString(String languageString) throws IOException {

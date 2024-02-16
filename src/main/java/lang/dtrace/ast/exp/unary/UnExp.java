@@ -1,8 +1,9 @@
 package lang.dtrace.ast.exp.unary;
 
 import lang.dtrace.ast.DtraceASTNode;
+import lang.dtrace.ast.exp.Exp;
 
-public abstract class UnExpNode extends DtraceASTNode {
+public abstract class UnExp extends Exp {
     public DtraceASTNode operand;
 
     public DtraceASTNode getOperand() {

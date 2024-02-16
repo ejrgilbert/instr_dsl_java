@@ -1,7 +1,7 @@
 package lang.dtrace.ast;
 
-import lang.dtrace.visitor.DtraceASTVisitor;
+import lang.dtrace.visitor.DtraceVisitor;
 
-public abstract class DtraceASTNode {
-    public abstract Object accept(DtraceASTVisitor visitor);
+public interface DtraceASTNode {
+    <T> T accept(DtraceVisitor<? extends T> visitor);
 }

@@ -1,8 +1,9 @@
 package lang.dtrace.ast.exp.binary;
 
 import lang.dtrace.ast.DtraceASTNode;
+import lang.dtrace.ast.exp.Exp;
 
-public abstract class BinExpNode extends DtraceASTNode {
+public abstract class BinExp extends Exp {
     public DtraceASTNode leftOperand;
     public DtraceASTNode rightOperand;
 
